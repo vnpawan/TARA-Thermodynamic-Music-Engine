@@ -36,7 +36,6 @@ The Pi handles all immediate environment interactions without relying on persist
 * **Ring-Buffer Wake Word Capture:** The system runs a continuous `openwakeword` loop. When "Hey Jarvis" is detected, the preceding 2-second audio ring buffer is captured in-memory and shipped to the Mac via HTTP for auto-labeling and true/false positive storage. No WAV files touch the Pi's SD card.
 * **In-Memory Command Saving:** Following the wake word, VAD (Voice Activity Detection) records the user's command until silence is detected. The raw PCM data is converted to WAV bytes in RAM and sent to the server.
 * **Zero-Latency Hardware Controls (Vosk Fast-Path):** To eliminate server-side latency for basic commands, the Pi runs a lightweight Vosk Kaldi recognizer. If Vosk detects a fast-path keyword (`stop`, `pause`, `resume`, or `skip`), it instantly halts or modifies the `cvlc` audio process locally and asynchronously updates the Mac's state. 
-* **Chunked Stream Playback:** The Pi buffers raw HTTP PCM streams into memory. Once a `300kb` pre-buffer is full, it dynamically appends to a temp file consumed simultaneously by `cvlc`, ensuring zero-silence gaps between TTS and song playback.
 
 ### 2. The Brain (Mac Server)
 The server acts as the heavy-inference hub. It manages the SQLite/JSON databases, runs the local LLM, and synthesizes localized spoken intros using Piper TTS.
